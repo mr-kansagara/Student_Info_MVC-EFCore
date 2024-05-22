@@ -1,0 +1,17 @@
+﻿@model InformationOfStudent.Models.BranchAddEdit;
+@{
+    var button = (Model?.BranchID == null || Model.BranchID == Guid.Empty) ? "Add branch" : "Edit branch";
+}
+
+<h3>@button :<span class="text-danger"><b>*</b></span></h3>
+<form asp-action="BranchAddEdit" method="post">
+    <input class="form-control" asp-for="BranchID" hidden>
+    <div class="mb-3 form-group">
+        <input type="text" class="form-control" asp-for="BranchName">
+        <span asp-validation-for="BranchName" class="text-danger"></span>
+    </div>
+     <button type="submit" class="btn btn-info">Save</button>
+    @* <button type="submit" class="btn btn-info">Edit Branch</button> *@
+    <a class="btn btn-danger" asp-controller="Branch" asp-action="Index">Cancel</a>
+
+</form>

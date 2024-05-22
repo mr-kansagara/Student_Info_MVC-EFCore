@@ -1,0 +1,115 @@
+﻿@model List<InformationOfStudent.Models.Tables.Student>;
+@{
+    var totalPages = (int)ViewData["TotalPages"];
+    var currentPage = (int)ViewData["CurrentPage"];
+}
+<a class="btn btn-info" asp-controller="Student" asp-action="StudentAddEdit">Add Student</a>
+
+<form class="m-3" asp-action="Index" asp-controller="Student" method="get">
+    <div class="form-group">
+        <label for="StudentCategory">Search by:</label>
+        <select id="StudentCategory" name="StudentCategory" class="form-control">
+            <option value="">select</option>
+            <option value="EnrollmentNumber">Enrollment Number</option>
+            <option value="Gender">Gender</option>
+            <option value="Branch">Branch</option>
+            <option value="MobileNumber">Mobile Number</option>
+            <option value="Email">Email</option>
+            <option value="FirstName">First name</option>
+            <option value="LastName">Last name</option>
+        </select>
+        <label for="searchQuery">Where:</label>
+        <input type="text" id="searchQuery" name="searchQuery" class="form-control" value="@ViewData["SearchQuery"]" />
+    </div>
+    <button type="submit" class="btn btn-primary m-2" id="SearchBtn">Search</button>
+</form>
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var student in Model)
+        {
+            <div class="col-sm-4">
+                <div class="card" style="width:19rem">
+                    <img src="~/@student.ImagePath" class="card-img-top" alt="..." style="height:400px" />
+                    <div class="card-body">
+                        <h4 class="card-title">@student.FirstName @student.LastName</h4>
+                        <ul>
+                            <li><b>Enrollment Number :</b>@student.Enrollmentnumber</li>
+                            <li><b>Branch :</b>@student?.Branch?.BranchName</li>
+                            <li><b>Gender :</b>@student?.Gender</li>
+                            <li><b>Mobile Number :</b>@student?.MobileNumber</li>
+                            <li><b>Email :</b>@student?.Email</li>
+
+                        </ul>
+                        <form asp-controller="Student" method="post">
+                            <a class="btn btn-info m-1" asp-controller="Student" asp-action="studentAddEdit" asp-route-id="@student?.StudentId">Edit</a>
+                            <button class="btn btn-danger m-1" asp-controller="Student" asp-action="StudentDelete" asp-route-id="@student?.StudentId" onclick="return confirm('are you sure want to Delete Student : @student?.FirstName @student?.MiddleName @student?.LastName')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="pagination justify-content-center m-3">
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?currentPage=1&searchQuery=@ViewData["SearchQuery"]&StudentCategory=@ViewData["StudentCategory"]" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                            <span class="sr-only">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?currentPage=@(currentPage - 1)&searchQuery=@ViewData["SearchQuery"]&StudentCategory=@ViewData["StudentCategory"]" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                }
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="?currentPage=@i&searchQuery=@ViewData["SearchQuery"]&StudentCategory=@ViewData["StudentCategory"]">@i</a>
+                    </li>
+                }
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?currentPage=@(currentPage + 1)&searchQuery=@ViewData["SearchQuery"]&StudentCategory=@ViewData["StudentCategory"]" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?currentPage=@totalPages&searchQuery=@ViewData["SearchQuery"]&StudentCategory=@ViewData["StudentCategory"]" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                            <span class="sr-only">Last</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+</div>
+
+
+<script>
+
+   
+
+
+    var branchCategory = new URLSearchParams(window.location.search).get("StudentCategory");
+    if (branchCategory) {
+        document.getElementById("StudentCategory").value = branchCategory;
+        document.getElementById("searchQuery").value = "";
+    }
+</script>
+

@@ -1,0 +1,110 @@
+﻿@model InformationOfStudent.Models.StudentAddEdit;
+
+@{
+    var button = (Model?.StudentId == null || Model?.StudentId == Guid.Empty) ? "Add Student" : "Edit Student";
+}
+
+<h1><u>@button</u></h1>
+
+<div class="Container">
+
+    <form asp-action="StudentAddEdit" method="post" enctype="multipart/form-data">
+
+        <input asp-for="StudentId" hidden/>
+
+        <div class="form-group">
+            <label asp-for="Enrollmentnumber">Enrollment number :<span class="text-danger"><b>*</b></span></label>
+            <input type="text" asp-for="Enrollmentnumber" class="form-control" pattern="\d{12}">
+            <span asp-validation-for="Enrollmentnumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FirstName">First Name :<span class="text-danger"><b>*</b></span></label>
+            <input type="text" asp-for="FirstName" class="form-control">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MiddleName">Middle Name :<span class="text-danger"><b>*</b></span></label>
+            <input type="text" asp-for="MiddleName" class="form-control">
+            <span asp-validation-for="MiddleName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName">Last Name :<span class="text-danger"><b>*</b></span></label>
+            <input type="text" asp-for="LastName" class="form-control">
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="BranchId">Branch :<span class="text-danger"><b>*</b></span></label>
+            <select asp-for="BranchId" class="form-control">
+                <option value=@null>Select</option>
+                @foreach(var i in ViewBag.Branch)
+                {
+                    <option value="@i.BranchID">@i.BranchName</option>
+                }
+            </select>
+            <span asp-validation-for="BranchId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Gender :<span class="text-danger"><b>*</b></span></label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" asp-for="Gender" value="Male">
+                <label class="form-check-label" asp-for="Gender">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" asp-for="Gender" value="Female">
+                <label class="form-check-label" asp-for="Gender">Female</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" asp-for="Gender" value="Other">
+                <label class="form-check-label" asp-for="Gender">Other</label>
+            </div><br />
+           <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MobileNumber">Mobile number :<span class="text-danger"><b>*</b></span></label>
+            <input type="text" asp-for="MobileNumber" class="form-control" pattern="\d{10}" >
+            <span asp-validation-for="MobileNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName">Email Address :<span class="text-danger"><b>*</b></span></label>
+            <input type="email" asp-for="Email" class="form-control">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImagePath">Image :<span class="text-danger"><b>*</b></span></label>
+            <input type="file" asp-for="ImagePath" class="form-control" onchange="previewImage(this)">
+            <span asp-validation-for="ImagePath" class="text-danger"></span>
+        </div>
+
+
+        <img id="imagePreview" src="#" alt="profile" style="padding:20px; border : 3px solid black; max-width: 300px; max-height: 300px; display: none; margin:10px">
+        
+
+        <button type="submit" class="btn btn-primary m-4">Save</button>
+        <a class="btn btn-danger" asp-controller="Student" asp-action="Index">Cancel</a>
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </form>
+</div>
+
+<script>
+    function previewImage(input) {
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var img = document.getElementById('imagePreview');
+            img.src = e.target.result;
+            img.style.display = 'block'; // Show the image preview
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>
+

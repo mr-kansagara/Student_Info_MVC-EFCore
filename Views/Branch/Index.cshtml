@@ -1,0 +1,118 @@
+﻿@model List<InformationOfStudent.Models.Tables.Branch>
+@{
+
+    var totalPages = (int?)ViewData["TotalPages"];
+    var currentPage = (int?)ViewData["CurrentPage"];
+    var itemsPerPage = (int?)ViewData["ItemsPerPage"];
+    var startIndex = (currentPage - 1) * itemsPerPage + 1;
+}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" asp-controller="Branch" asp-action="BranchAddEdit">Add Branch</a>
+        </div>
+        <div class="col">
+            @* drop down list *@
+            <select id="searchCategory" name="searchCategory">
+                @* <option value="">select</option> *@
+                <option value="All">All</option>
+                <option value="Active">Active</option>
+                <option value="Deactive">Deactive</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+@* <form id="searchForm" method="get" asp-controller="Branch" asp-action="Index">
+    <input type="hidden" id="currentPage" name="CurrentPage" value="@currentPage" />
+</form>
+ *@
+
+<table class="table table-striped" id="branchTable">
+    <thead>
+        <tr>
+            <th scope="col">Sr. Number</th>
+            <th scope="col">Branch</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var branch in Model)
+        {
+            <tr>
+                <th scope="row">@startIndex</th>
+                <td>@branch.BranchName</td>
+                <td>@(branch.IsActive == "1" ? "Active" : "Inactive")</td>
+                <td>
+                    <form asp-controller="Branch" method="post">
+                        <a class="btn btn-secondary" asp-controller="Branch" asp-action="BranchAddEdit" asp-route-id="@branch.BranchID">Edit</a>
+                        @if (branch.IsActive == "1")
+                        {
+                            <button id="inactiveBtn" class="btn btn-danger" asp-controller="Branch" asp-action="InactiveActiveBranch" asp-route-id="@branch.BranchID" onclick="return confirm('Are you sure want to deactivate branch : @branch.BranchName')">Deactivate</button>
+                        }
+                        else
+                        {
+                            <button id="activeBtn" class="btn btn-success" asp-controller="Branch" asp-action="InactiveActiveBranch" asp-route-id="@branch.BranchID" onclick="return confirm('Are you sure want to activate branch : @branch.BranchName')">Activate</button>
+                        }
+                    </form>
+                </td>
+            </tr>
+            startIndex++;
+        }
+    </tbody>
+</table>
+<div class="pagination justify-content-center">
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?CurrentPage=1&searchCategory=@ViewData["searchCategory"]" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                            <span class="sr-only">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?CurrentPage=@(currentPage - 1)&searchCategory=@ViewData["searchCategory"]" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                }
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="?CurrentPage=@i&searchCategory=@ViewData["searchCategory"]">@i</a>
+                    </li>
+                }
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?CurrentPage=@(currentPage + 1)&searchCategory=@ViewData["searchCategory"]" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?CurrentPage=@totalPages&searchCategory=@ViewData["searchCategory"]" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                            <span class="sr-only">Last</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@section Scripts {
+
+
+}
+
+
+
